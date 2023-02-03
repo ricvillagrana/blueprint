@@ -6,3 +6,8 @@
 /pkg/
 /spec/reports/
 /tmp/
+
+/app/
+/db/
+blueprint.yml
+blueprint-*.gem

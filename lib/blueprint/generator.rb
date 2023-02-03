@@ -1,0 +1,2 @@
+module Blueprint::Generator
+end
