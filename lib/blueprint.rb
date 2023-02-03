@@ -6,8 +6,9 @@ require "pry"
 
 require_relative "blueprint/version"
 require_relative "blueprint/logger"
-require_relative "blueprint/generator/controller_generator"
+require_relative "blueprint/generator/migration_generator"
 require_relative "blueprint/generator/model_generator"
+require_relative "blueprint/generator/controller_generator"
 
 module Blueprint
   class Error < StandardError; end
@@ -25,7 +26,7 @@ module Blueprint
       Generator::ModelGenerator.generate(blueprint)
 
       Logger.log("Creating migrations...")
-      generate_migrations
+      Generator::MigrationGenerator.generate(blueprint)
 
       Logger.log("Creating controllers...")
       Generator::ControllerGenerator.generate(blueprint)
@@ -50,34 +51,6 @@ module Blueprint
       # Create the subdirectories
       directories.each do |dir|
         Dir.mkdir(dir) unless Dir.exist?(dir)
-      end
-    end
-
-    def generate_migrations
-      @blueprint["models"].each do |model_name, fields|
-        migration_name = "create_#{model_name.pluralize}.rb"
-
-        delete_migration(migration_name)
-
-        # Create the migration file
-        File.open("db/migrate/#{Time.now.strftime("%Y%m%d%H%M%S")}_#{migration_name}", "w") do |f|
-          # Write the class definition
-          f.puts "class Create#{model_name.capitalize.pluralize} < ActiveRecord::Migration[5.2]"
-          f.puts "  def change"
-          # Write the migration command for each field
-          fields.each do |field_name, field_data|
-            type = field_data['type'].split(':')[0]
-            f.puts "    add_column :#{model_name.pluralize}, :#{field_name}, :#{type}"
-          end
-          f.puts "  end"
-          f.puts "end"
-        end
-      end
-    end
-
-    def delete_migration(migration_name)
-      Dir.glob("db/migrate/*_#{migration_name}").each do |file|
-        File.delete(file)
       end
     end
   end
