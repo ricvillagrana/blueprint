@@ -3,10 +3,10 @@
 require_relative "lib/blueprint/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "blueprint"
+  spec.name = "rails_blueprint"
   spec.version = Blueprint::VERSION
   spec.authors = ["Ricardo Villagrana"]
-  spec.email = ["ricardovillagranal@gmail.com"]
+  spec.email = ["ricardov@duck.com"]
 
   spec.summary = "Ruby on Rails applicaiton generator."
   spec.description = "Build your app structure from a blueprint."
@@ -27,6 +27,7 @@ Gem::Specification.new do |spec|
       (f == __FILE__) || f.match(%r{\A(?:(?:bin|test|spec|features)/|\.(?:git|travis|circleci)|appveyor)})
     end
   end + ["bin/blueprint"]
+
   spec.bindir = "exe"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]

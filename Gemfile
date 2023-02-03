@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in blueprint.gemspec
+# Specify your gem's dependencies in rails_blueprint.gemspec
 gemspec
 
 gem "rake", "~> 13.0"

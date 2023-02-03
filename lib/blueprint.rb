@@ -13,7 +13,7 @@ require_relative "blueprint/generator/controller_generator"
 module Blueprint
   class Error < StandardError; end
 
-  FILE = "blueprint.yml"
+  FILE = "./blueprint.yml"
 
   class << self
     def generate(_)

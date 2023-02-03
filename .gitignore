@@ -10,4 +10,4 @@
 /app/
 /db/
 blueprint.yml
-blueprint-*.gem
+rails_blueprint-*.gem
