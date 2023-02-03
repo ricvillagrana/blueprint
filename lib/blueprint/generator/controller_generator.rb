@@ -1,6 +1,6 @@
 module Blueprint
   module Generator
-    module Controller
+    module ControllerGenerator
       extend self
 
       def generate(blueprint)

@@ -6,7 +6,8 @@ require "pry"
 
 require_relative "blueprint/version"
 require_relative "blueprint/logger"
-require_relative "blueprint/generator/controller"
+require_relative "blueprint/generator/controller_generator"
+require_relative "blueprint/generator/model_generator"
 
 module Blueprint
   class Error < StandardError; end
@@ -16,28 +17,27 @@ module Blueprint
   class << self
     def generate(_)
       Logger.log("Generating your from #{FILE}...")
-      read_file
 
       Logger.log("Creating directories...")
       create_directories
 
       Logger.log("Creating models...")
-      generate_models
+      Generator::ModelGenerator.generate(blueprint)
 
       Logger.log("Creating migrations...")
       generate_migrations
 
       Logger.log("Creating controllers...")
-      Generator::Controller.generate(@blueprint)
+      Generator::ControllerGenerator.generate(blueprint)
 
       Logger.log("Finished!")
     end
 
     private
 
-    def read_file
+    def blueprint
       if File.exist?(FILE)
-        @blueprint = YAML.safe_load(File.read(FILE))
+        @blueprint ||= YAML.safe_load(File.read(FILE))
       else
         puts "File does not exist"
       end
@@ -50,35 +50,6 @@ module Blueprint
       # Create the subdirectories
       directories.each do |dir|
         Dir.mkdir(dir) unless Dir.exist?(dir)
-      end
-    end
-
-    def generate_models
-      @blueprint["models"].each do |model_name, fields|
-        # Create the model file
-        File.open("app/models/#{model_name.classify.underscore}.rb", 'w') do |f|
-          # Write the class definition
-          f.puts "class #{model_name.classify} < ApplicationRecord"
-          # Write the validation for each field
-          fields.each do |field_name, field_data|
-            validations = field_data['validates']
-
-            next if validations.nil?
-
-            text = "  validates :#{field_name}, "
-            text += validations.map do |validation|
-              if validation.include?(":")
-                validation
-              else
-                "#{validation}: true"
-              end
-            end.join(", ")
-
-            f.puts text
-          end
-          # Close the class definition
-          f.puts "end"
-        end
       end
     end
 
