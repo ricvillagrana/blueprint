@@ -57,7 +57,11 @@ module Blueprint
         when "create"
           file.puts "    #{model_name}.create(#{params})"
         when "query"
-          file.puts "    @#{model_name.underscore.send(params == 'all' ? 'pluralize' : 'singularize')} = #{model_name}.#{params}"
+          if %w[all where select group joins].include?(params)
+            file.puts "    @#{model_name.underscore.pluralize} = #{model_name}.#{params}"
+          else
+            file.puts "    @#{model_name.underscore.singularize} = #{model_name}.#{params}"
+          end
         end
       end
     end
